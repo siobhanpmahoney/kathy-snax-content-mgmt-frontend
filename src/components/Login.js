@@ -31,20 +31,19 @@ class Login extends React.Component {
     })
   }
 
-  onAuthorizeUser = () => {
+  onAuthorizeUser = (event) => {
+    event.preventDefault()
     console.log(this.state)
 
     let info = this.state
-    const token=localStorage.getItem('token')
-    const login_url = 'http://localhost:3000/api/v1/login'
+    const auth_url = 'http://localhost:3000/api/v1/login'
 
     // if (token) {
-      return fetch(login_url, {
+      return fetch(auth_url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accepts': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(info)
       })
@@ -54,23 +53,38 @@ class Login extends React.Component {
         if (res.error) {
           alert(res.error)
         } else {
-          this.onSetUser(res)
+          console.log("got token from server", res)
+          this.onSetUserToken(res)
         }
       })
+
 
     // }
   }
 
-  onSetUser = (user) => {
-    debugger
+  onSetUserToken = (user) => {
+    const token=user.token
     localStorage.setItem('token', user.token)
-    this.props.setUser(user)
+    this.onSetUser(user)
   }
 
 
 
-authorize = () => {
-
+onSetUser = (user) => {
+  const login_url = 'http://localhost:3000/api/v1/current_user'
+  const token = localStorage.getItem('token', user.token)
+  return fetch(login_url, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accepts': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("got logged in user info? ", data)
+    return this.props.setUser(data)
+  })
 }
 
 render() {
@@ -80,10 +94,10 @@ render() {
 
   return (
     <div>
-      <form onSubmit={this.onAuthorizeUser}>
+      <form>
         <input onChange= {this.onFormUpdates} type='text' name='username' value={this.state.username} />
         <input onChange= {this.onFormUpdates} type="password" name='password' value={this.state.password} />
-        <button type="submit">log in</button>
+        <button onClick={this.onAuthorizeUser}>log in</button>
       </form>
     </div>
   )
