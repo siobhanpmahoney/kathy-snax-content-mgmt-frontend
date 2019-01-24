@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect,withRouter } from 'react-router';
-import { setUser } from '../actions/user'
+import { setUser } from '../actions'
 import { Login } from '../components/Login'
 
 export default function (WrappedComponent) {
@@ -9,7 +9,7 @@ export default function (WrappedComponent) {
 
     render() {
 
-      if (this.props.user.authenticated) {
+      if (!!this.props.user.authenticated) {
         return (
           <WrappedComponent {...this.props} />
         )

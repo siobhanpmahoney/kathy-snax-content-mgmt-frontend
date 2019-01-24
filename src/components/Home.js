@@ -1,11 +1,13 @@
 import React from 'react'
-import { withRouter } from 'react-router' 
+import { withRouter } from 'react-router'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setUser } from '../actions/user'
+import { setUser } from '../actions'
 import WithAuth from '../wrappers/WithAuth'
 
+
 const Home = (props) => {
+  console.log("home props", props.user)
   return (
     <div>Home</div>
   )

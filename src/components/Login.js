@@ -1,8 +1,9 @@
 import React from 'react'
-import { withRouter, Redirect } from 'react-router'
+import { withRouter } from 'react-router'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setUser } from '../actions/user'
+import { setUser } from '../actions'
 
 class Login extends React.Component {
 
@@ -15,12 +16,46 @@ class Login extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.addlAuthCall()
+  }
+
+
+
   componentDidUpdate(prevProps) {
-    if (prevProps != this.props) {
-      console.log("prevProps: ", prevProps)
-      console.log("currentProps: ", this.props)
+    if (prevProps.user != this.props.user) {
+      this.addlAuthCall()
     }
   }
+
+  addlAuthCall = () => {
+    console.log("in addlAuthCall")
+    const token=localStorage.getItem('token')
+    if (token) {
+      return fetch("https://capture-jobs-api.herokuapp.com/api/v1/current_user", {
+        headers:  {
+          'Content-Type': 'application/json',
+          'Accepts': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }})
+        .then(response => response.json())
+        .then(user => {
+          if(user) {
+            this.props.setUser(user)
+          }
+          else {
+            this.setState({
+              username: "",
+              password: ""
+            })
+          }
+        })
+      }
+  }
+
+
+
+
 
 
   onFormUpdates = (event) => {
@@ -37,6 +72,8 @@ class Login extends React.Component {
 
     let info = this.state
     const auth_url = 'http://localhost:3000/api/v1/login'
+    const token = localStorage.getItem('token')
+
 
     // if (token) {
       return fetch(auth_url, {
@@ -44,6 +81,7 @@ class Login extends React.Component {
         headers: {
           'Content-Type': 'application/json',
           'Accepts': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(info)
       })
@@ -57,6 +95,7 @@ class Login extends React.Component {
           this.onSetUserToken(res)
         }
       })
+      .then(() =>   this.addlAuthCall())
 
 
     // }
@@ -65,36 +104,41 @@ class Login extends React.Component {
   onSetUserToken = (user) => {
     const token=user.token
     localStorage.setItem('token', user.token)
-    this.onSetUser(user)
+    // this.onSetUser(user)
+
+      return this.props.setUser(user)
+
+
   }
 
 
 
-onSetUser = (user) => {
-  const login_url = 'http://localhost:3000/api/v1/current_user'
-  const token = localStorage.getItem('token', user.token)
-  return fetch(login_url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accepts': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("got logged in user info? ", data)
-    return this.props.setUser(data)
-  })
-}
+// onSetUser = (user) => {
+//   const login_url = 'http://localhost:3000/api/v1/current_user'
+//   const token = localStorage.getItem('token', user.token)
+//   return fetch(login_url, {
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Accepts': 'application/json',
+//       'Authorization': `Bearer ${token}`
+//     },
+//   })
+//   .then(res => res.json())
+//   .then(data => {
+//     console.log("got logged in user info? ", data)
+//     return this.props.setUser(data)
+//   })
+// }
 
 render() {
+  console.log("login page props", this.props.user)
   if (!!this.props.user.authenticated) {
     return  <Redirect to = '/' />
   }
 
   return (
     <div>
-      <form>
+      <form >
         <input onChange= {this.onFormUpdates} type='text' name='username' value={this.state.username} />
         <input onChange= {this.onFormUpdates} type="password" name='password' value={this.state.password} />
         <button onClick={this.onAuthorizeUser}>log in</button>
