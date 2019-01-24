@@ -9,8 +9,31 @@ import './App.css';
 
 class App extends Component {
 
+  componentDidMount() {
+    this.onAuthToken()
+  }
+
+  onAuthToken = () => {
+    const token = localStorage.getItem('token', token)
+    if (token) {
+      const url = 'http://localhost:3000/api/v1/current_user'
+      return fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+
+      })
+      .then(response => response.json())
+      .then(json => this.props.setUser(json))
+    } else {
+      return;
+    }
+
+  }
+
   render() {
-    console.log("App", this.props)
+    console.log("App", localStorage.getItem('token'))
     return (
       <div className="App">
 
