@@ -18,14 +18,14 @@ const HeadingOptions = (props) => {
 
 
   return (
-    <span>
-      <select value={props.active} onChange={onToggle}>
+    <div>
+      <select className="header-select" value={props.active} onChange={onToggle}>
         <option value=''>Heading Levels</option>
         {BLOCK_TYPE_HEADINGS.map((heading) => {
           return <option className={props.active ? "RichEditor-styleButton RichEditor-activeButton" : "RichEditor-styleButton"} value={heading.style}>{heading.label}</option>
         })}
       </select>
-    </span>
+    </div>
   )
 }
 

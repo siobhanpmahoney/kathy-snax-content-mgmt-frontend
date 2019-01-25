@@ -55,14 +55,16 @@ class BioEditor extends React.Component {
           <StyleMenu editorState={this.state.editorState} toggleInlineStyle={this.toggleInlineStyle} toggleBlockType={this.toggleBlockType} />
 
 
-
         </div>
 
+        <div className='editor-wrapper'>
         <Editor
+          className="editor"
           editorState={this.state.editorState}
           handleKeyCommand={this.handleKeyCommand}
           onChange = {this.onChange}
           />
+        </div>
       </div>
     )
   }

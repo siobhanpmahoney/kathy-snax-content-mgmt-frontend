@@ -1,32 +1,87 @@
+* {
+  font-family: "IBM Plex Sans"
+}
+
+html, body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+}
+
 .App {
-  text-align: center;
+  margin: 6px;
+  position: relative;
+  height: 100%;
+  width:100%
+
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.bio-editor-container {
+  margin: 6px;
+  border: #ff595a 1.2px solid;
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.style-menu-container {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 3px;
+  background-image: linear-gradient( 109.6deg,rgba(57,106,252,1) 11.2%, rgba(48,86,253,1) 91.1% );
+}
+
+.styleButton, .header-select {
+  border: #ff595a 1px solid;
+  border-radius: 6px;
+  font-size: 13px;;
+  font-family: 'IBM Plex Sans', sans-serif;
+  margin: 0.35em;
+  height: 2.25em;
+}
+
+.styleButton, #link_url, .RichEditor-styleButton {
+  padding: 0.5em;
+  background: white;
+  color: #ff595a;
+  width: fit-content;
+}
+
+.RichEditor-activeButton {
+  background-color: #feb47b;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+select {
+  padding: 0.5em;
+  background: white;
+  color: #ff595a;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#bold, #italic, #underline {
+  width: 30px;
+}
+
+.styleButton#bold {
+  font-weight: 800;
+}
+
+.styleButton#italic {
+  font-style: italic;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.styleButton#underline {
+  text-decoration: underline;
+}
+
+
+.editor-wrapper {
+  background: white;
+  padding: 12px;
 }
