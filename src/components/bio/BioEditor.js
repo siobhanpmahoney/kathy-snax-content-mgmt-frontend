@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Editor, EditorState, RichUtils } from 'draft-js'
 
-import {inlineStyles} from '../draftjs/styles'
+import StyleMenu from '../draftjs/StyleMenu'
 
 class BioEditor extends React.Component {
   constructor(props) {
@@ -27,18 +27,22 @@ class BioEditor extends React.Component {
     return 'not-handled';
   }
 
-  handleStyleButton = (event) => {
-    let name = event.target.name
-    console.log("name", name)
-    this.onChange(RichUtils.toggleInlineStyle(this.state.editor, 'BOLD'))
-  }
-
   handleInlineStyle = (event) => {
     let style = event.target.name
     this.onChange(
       RichUtils.toggleInlineStyle(this.state.editorState, style)
     )
   }
+
+
+  toggleInlineStyle = (style) => {
+    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, style))
+  }
+
+  toggleBlockType = (blockType) => {
+    this.onChange(RichUtils.toggleBlockType(this.state.editorState, blockType));
+  };
+
 
 
 
@@ -48,9 +52,9 @@ class BioEditor extends React.Component {
       <div className='bio-editor-container'>
         <div className='editor-menu'>
 
-        {inlineStyles.map((s) => {
-          return <button onClick={this.handleInlineStyle} name={s.style} key={s.buttonId}>{s.style[0]}</button>
-        })}
+          <StyleMenu editorState={this.state.editorState} toggleInlineStyle={this.toggleInlineStyle} toggleBlockType={this.toggleBlockType} />
+
+
 
         </div>
 
