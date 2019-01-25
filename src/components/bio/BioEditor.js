@@ -120,21 +120,6 @@ export default class BioEditor extends React.Component {
 
 
   render() {
-    let urlInput;
-    if (this.state.showURLInput) {
-      urlInput = (
-        <div>
-          <input
-            onChange={this.onURLChange}
-            ref="url"
-            type="text"
-            value={this.state.urlValue}
-            onKeyDown={this.onLinkInputKeyDown}
-            />
-          <button onMouseDown={this.confirmLink}>Confirm</button>
-        </div>
-      );
-    }
 
     return (
       <div className='bio-editor-container'>
@@ -150,13 +135,7 @@ export default class BioEditor extends React.Component {
             urlValue={this.state.urlValue}
             onURLChange = {this.onURLChange}
             />
-          <div>
-            <button onMouseDown={this.promptForLink}>
-              Add Link
-            </button>
-            <button onMouseDown={this.removeLink}>Remove Link</button>
-          </div>
-          {urlInput}
+  
 
         </div>
 
