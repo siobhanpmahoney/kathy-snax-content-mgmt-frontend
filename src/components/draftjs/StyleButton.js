@@ -10,7 +10,6 @@ class StyleButton extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     let className = "RichEditor-styleButton inline styleButton";
     if (this.props.active) {
       className += " RichEditor-activeButton";
