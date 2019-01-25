@@ -1,33 +1,55 @@
 import React from 'react'
-
-import {convertToRaw, CompositeDecorator, Editor, EditorState,RichUtils} from 'draft-js'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {loadBio, updateBio} from '../../actions'
+import {convertToRaw, convertFromRaw, CompositeDecorator, Editor, EditorState, RichUtils} from 'draft-js'
 import StyleMenu from '../draftjs/StyleMenu'
 //
-export default class BioEditor extends React.Component {
+class BioEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}]);
+      const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
 
     this.state = {
-      editorState: EditorState.createEmpty(decorator),
+      editorState: EditorState.createEmpty(),
       showURLInput: false,
       urlValue: ""
-    };
+    }
 
     this.focus = () => this.refs.editor.focus();
     this.onChange = editorState => this.setState({ editorState });
-    this.logState = () => {
-      const content = this.state.editorState.getCurrentContent();
-      console.log(convertToRaw(content));
-    };
     this.promptForLink = this._promptForLink.bind(this);
     this.onURLChange = this._onURLChange.bind(this)
     this.confirmLink = this._confirmLink.bind(this);
     this.onLinkInputKeyDown = this._onLinkInputKeyDown.bind(this);
     this.removeLink = this._removeLink.bind(this);
+    this.onSubmitEdits = this._onSubmitEdits.bind(this)
+
   }
+
+
+
+  componentDidMount() {
+    this.props.loadBio()
+    if (this.props.bio.content) {
+      this.setState({
+       editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.bio.content)))
+      })
+    }
+
+
+ }
+
+ componentDidUpdate(prevProps, prevState) {
+  if (prevProps.bio.content != this.props.bio.content) {
+    let bio = this.props.bio
+    const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
+   this.setState({
+     editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(bio.content)), decorator)
+   })
+  }
+ }
 
   _onURLChange(e) {
     let val = e.target.value
@@ -36,7 +58,7 @@ export default class BioEditor extends React.Component {
 
   _promptForLink(e) {
     e.preventDefault();
-    debugger
+
     const { editorState } = this.state;
     const selection = editorState.getSelection();
     if (!selection.isCollapsed()) {
@@ -97,6 +119,13 @@ export default class BioEditor extends React.Component {
     }
   }
 
+  _onSubmitEdits = () => {
+    let contentState = this.state.editorState.getCurrentContent()
+    let bio = {content: convertToRaw(contentState)}
+    bio["content"] = JSON.stringify(bio.content)
+    this.props.updateBio(bio.content)
+  }
+
 
 
 
@@ -119,6 +148,7 @@ export default class BioEditor extends React.Component {
   };
 
 
+
   render() {
 
     return (
@@ -134,8 +164,9 @@ export default class BioEditor extends React.Component {
             confirmLink={this.confirmLink}
             urlValue={this.state.urlValue}
             onURLChange = {this.onURLChange}
+            onSubmitEdits = {this.onSubmitEdits}
             />
-  
+
 
         </div>
 
@@ -168,9 +199,22 @@ function findLinkEntities(contentBlock, callback, contentState) {
 
 const Link = props => {
   const { url } = props.contentState.getEntity(props.entityKey).getData();
+  console.log(url)
   return (
-    <a href={url} >
+    <a href={url}>
       {props.children}
     </a>
   );
 };
+
+function mapStateToProps(state, props) {
+  return {
+    bio: state.bio
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadBio, updateBio}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BioEditor)

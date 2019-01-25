@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "babel-loader": "^8.0.5",
     "css-loader": "^2.1.0",
     "draft-js": "^0.10.5",
     "draft-js-linkify-plugin": "^2.0.1",

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {setUser} from './actions'
+import {setUser, loadBio, updateBio} from './actions'
 import Home from './components/Home'
 import Login from './components/Login'
 import BioContainer from './components/bio/BioContainer'
