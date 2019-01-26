@@ -6,6 +6,7 @@ import {setUser, loadBio, updateBio} from './actions'
 import Home from './components/Home'
 import Login from './components/Login'
 import BioContainer from './components/bio/BioContainer'
+import AnnouncementContainer from './components/announcements/AnnouncementContainer'
 import './App.css';
 
 class App extends Component {
@@ -44,6 +45,7 @@ class App extends Component {
           <Route exact path='/login' render={ (routerProps) => <Login history={routerProps.history}/> } />
 
         <Route exact path='/bio' render={ (routerProps) => <BioContainer history={routerProps.history}/> } />
+        <Route exact path='/announcements' render={ (routerProps) => <AnnouncementContainer history={routerProps.history}/> } />
 
           {/*<Redirect to='/' />*/}
 

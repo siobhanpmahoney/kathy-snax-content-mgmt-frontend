@@ -13,7 +13,7 @@ const InlineStyles = props => {
 	const { editorState, onToggle, contentState } = props;
   const key = editorState.getSelection().getStartKey();
   const sty = editorState.getCurrentInlineStyle()
-  let newState = RichUtils.toggleInlineStyle(editorState, sty)
+  let announcementstate = RichUtils.toggleInlineStyle(editorState, sty)
 
 	return (
 		<span className="RichEditor-controls">

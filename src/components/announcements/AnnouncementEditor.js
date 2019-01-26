@@ -1,12 +1,10 @@
 import React from 'react'
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import {loadBio, updateBio} from '../../actions'
 import {convertToRaw, convertFromRaw, CompositeDecorator, Editor, EditorState, RichUtils} from 'draft-js'
 import StyleMenu from '../draftjs/StyleMenu'
-//
-class BioEditor extends React.Component {
 
+
+
+class AnnouncementEditor extends React.Component {
   constructor(props) {
     super(props);
       const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
@@ -28,28 +26,29 @@ class BioEditor extends React.Component {
 
   }
 
-
-
   componentDidMount() {
-    this.props.loadBio()
-    if (this.props.bio.content) {
+    if (!!this.props.announcement && this.props.announcement != "new" && !!this.props.announcement.content) {
       this.setState({
-       editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.bio.content)))
+       editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.announcement.content)))
+      })
+    } else {
+      this.setState({
+        editorState: EditorState.createEmpty(decorator)
       })
     }
-
-
- }
-
- componentDidUpdate(prevProps, prevState) {
-  if (prevProps.bio.content != this.props.bio.content) {
-    let bio = this.props.bio
-    const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
-   this.setState({
-     editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(bio.content)), decorator)
-   })
   }
- }
+
+  componentDidUpdate(prevProps, prevState) {
+   if ((prevProps.announcement == "new" && this.props.announcement !="new") || (!!prevProps.announcement &&  prevProps.announcement.content != this.props.announcement.content)) {
+     let announcement = this.props.announcement
+     const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
+    this.setState({
+      editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(announcement.content)), decorator)
+    })
+  } else {
+    return;
+  }
+  }
 
   _onURLChange(e) {
     let val = e.target.value
@@ -110,7 +109,6 @@ class BioEditor extends React.Component {
     }
   }
 
-
   onChange = (editorState) => {
     if (editorState.getDecorator() !== null) {
       this.setState({
@@ -120,10 +118,15 @@ class BioEditor extends React.Component {
   }
 
   _onSubmitEdits = () => {
+    console.log('in on submitEdits')
     let contentState = this.state.editorState.getCurrentContent()
-    let bio = {content: convertToRaw(contentState)}
-    bio["content"] = JSON.stringify(bio.content)
-    this.props.updateBio(bio.content)
+    console.log("contentState", contentState)
+    let edits = {content: convertToRaw(contentState)}
+    console.log("edits", edits)
+
+    edits["content"] = JSON.stringify(edits.content)
+    console.log("edits after", edits)
+    this.props.handleSaveEditorUpdates(edits.content)
   }
 
 
@@ -150,9 +153,8 @@ class BioEditor extends React.Component {
 
 
   render() {
-
     return (
-      <div className='bio-editor-container'>
+      <div className='announcement-editor-container'>
         <div className='editor-menu'>
 
           <StyleMenu
@@ -185,7 +187,7 @@ class BioEditor extends React.Component {
   }
 }
 
-
+const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
 
 function findLinkEntities(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(character => {
@@ -207,14 +209,4 @@ const Link = props => {
   );
 };
 
-function mapStateToProps(state, props) {
-  return {
-    bio: state.bio
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadBio, updateBio}, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BioEditor)
+export default AnnouncementEditor

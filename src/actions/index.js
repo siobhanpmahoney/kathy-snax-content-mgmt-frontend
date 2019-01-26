@@ -1,6 +1,11 @@
+import {fetchAnnouncements, createAnnouncement, updateAnnouncement} from '../services'
+
 export const SET_USER = 'SET_USER'
 export const LOAD_BIO = 'LOAD_BIO'
 export const UPDATE_BIO = 'UPDATE_BIO'
+export const FETCH_ANNOUNCEMENTS = 'FETCH_ANNOUNCEMENTS'
+export const CREATE_ANNOUNCEMENT = 'CREATE_ANNOUNCEMENT'
+export const UPDATE_ANNOUNCEMENT = 'UPDATE_ANNOUNCEMENT'
 
 export function setUser(user) {
   return (dispatch) => {
@@ -31,5 +36,36 @@ export function updateBio(bio_content) {
     .then(json =>
       dispatch({ type: UPDATE_BIO, payload: json })
     );
+  }
+}
+
+export function fetchAnnouncementsAction() {
+  return(dispatch) => {
+    return fetchAnnouncements()
+    .then(json => dispatch({
+      type: FETCH_ANNOUNCEMENTS,
+      payload: json
+    }))
+  }
+}
+
+export function createAnnouncementAction(data) {
+  return(dispatch) => {
+    return createAnnouncement(data)
+    .then(json => dispatch({
+      type: CREATE_ANNOUNCEMENT,
+      payload: json
+    }))
+  }
+}
+
+export function updateAnnouncementAction(data) {
+  return(dispatch) => {
+    return updateAnnouncement(data)
+    .then(json => dispatch({
+      type: UPDATE_ANNOUNCEMENT,
+      id: data.id,
+      payload: json
+    }))
   }
 }
