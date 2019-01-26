@@ -7,7 +7,7 @@ import StyleMenu from '../draftjs/StyleMenu'
 class AnnouncementEditor extends React.Component {
   constructor(props) {
     super(props);
-      const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
+    const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
 
     this.state = {
       editorState: EditorState.createEmpty(),
@@ -29,22 +29,39 @@ class AnnouncementEditor extends React.Component {
   componentDidMount() {
     if (!!this.props.announcement && this.props.announcement != "new" && !!this.props.announcement.content) {
       this.setState({
-       editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.announcement.content)))
+        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.announcement.content)))
       })
     }
   }
 
 
-    componentDidUpdate(prevProps, prevState) {
-      if (prevProps.announcement != this.props.announcement && this.props.announcement != "new" ) {
-        const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.announcement != this.props.announcement && this.props.announcement != "new" ) {
+      const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
 
-          this.setState({
-           editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.announcement.content)), decorator)
-          })
+      this.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.announcement.content)), decorator)
+      })
 
-      }
     }
+  }
+
+
+  onChange = (editorState) => {
+    if (editorState.getDecorator() !== null) {
+      this.setState({
+        editorState,
+      });
+    }
+  }
+
+  _onSubmitEdits = () => {
+    let contentState = this.state.editorState.getCurrentContent()
+    let edits = {content: convertToRaw(contentState)}
+    edits["content"] = JSON.stringify(edits.content)
+    this.props.handleSaveEditorUpdates(edits.content)
+  }
+
 
   _onURLChange(e) {
     let val = e.target.value
@@ -68,9 +85,9 @@ class AnnouncementEditor extends React.Component {
         url = linkInstance.getData().url;
       }
       this.setState({
-          showURLInput: true,
-          urlValue: url
-        });
+        showURLInput: true,
+        urlValue: url
+      });
     }
   }
 
@@ -103,26 +120,6 @@ class AnnouncementEditor extends React.Component {
         editorState: RichUtils.toggleLink(editorState, selection, null)
       });
     }
-  }
-
-  onChange = (editorState) => {
-    if (editorState.getDecorator() !== null) {
-      this.setState({
-        editorState,
-      });
-    }
-  }
-
-  _onSubmitEdits = () => {
-    console.log('in on submitEdits')
-    let contentState = this.state.editorState.getCurrentContent()
-    console.log("contentState", contentState)
-    let edits = {content: convertToRaw(contentState)}
-    console.log("edits", edits)
-
-    edits["content"] = JSON.stringify(edits.content)
-    console.log("edits after", edits)
-    this.props.handleSaveEditorUpdates(edits.content)
   }
 
 

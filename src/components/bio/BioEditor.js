@@ -1,7 +1,4 @@
 import React from 'react'
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import {loadBio, updateBio} from '../../actions'
 import {convertToRaw, convertFromRaw, CompositeDecorator, Editor, EditorState, RichUtils} from 'draft-js'
 import StyleMenu from '../draftjs/StyleMenu'
 //
@@ -31,7 +28,7 @@ class BioEditor extends React.Component {
 
 
   componentDidMount() {
-    this.props.loadBio()
+    // this.props.loadBio()
     if (this.props.bio.content) {
       this.setState({
        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.bio.content)))
@@ -50,6 +47,23 @@ class BioEditor extends React.Component {
    })
   }
  }
+
+ onChange = (editorState) => {
+   if (editorState.getDecorator() !== null) {
+     this.setState({
+       editorState,
+     });
+   }
+ }
+
+ _onSubmitEdits() {
+   let contentState = this.state.editorState.getCurrentContent()
+   let edits = {content: convertToRaw(contentState)}
+   edits["content"] = JSON.stringify(edits.content)
+   this.props.handleSaveEditorUpdates(edits.content)
+ }
+
+
 
   _onURLChange(e) {
     let val = e.target.value
@@ -110,21 +124,6 @@ class BioEditor extends React.Component {
     }
   }
 
-
-  onChange = (editorState) => {
-    if (editorState.getDecorator() !== null) {
-      this.setState({
-        editorState,
-      });
-    }
-  }
-
-  _onSubmitEdits = () => {
-    let contentState = this.state.editorState.getCurrentContent()
-    let bio = {content: convertToRaw(contentState)}
-    bio["content"] = JSON.stringify(bio.content)
-    this.props.updateBio(bio.content)
-  }
 
 
 
@@ -207,14 +206,16 @@ const Link = props => {
   );
 };
 
-function mapStateToProps(state, props) {
-  return {
-    bio: state.bio
-  }
-}
+// function mapStateToProps(state, props) {
+//   return {
+//     xbio: state.bio
+//   }
+// }
+//
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators({loadBio, updateBioAction}, dispatch);
+// }
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(BioEditor)
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadBio, updateBio}, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BioEditor)
+export default BioEditor

@@ -11,7 +11,8 @@ export const bio = (state = { content: null }, action) => {
 
    case UPDATE_BIO:
     console.log("in update bio, payload: ", action.payload)
-      state = Object.assign({}, state, {content: action.payload.content});
+      state = Object.assign({}, action.payload);
+      console.log("in update bio reducer", state)
       return state;
 
    default:

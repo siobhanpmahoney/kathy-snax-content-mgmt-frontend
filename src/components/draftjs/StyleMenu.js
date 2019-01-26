@@ -10,6 +10,7 @@ const StyleMenu = (props) => {
   return (
     <div className='style-menu-container'>
       <button onClick={props.onSubmitEdits} className="RichEditor-styleButton inline styleButton">Save</button>
+
       <HeadingOptions editorState={props.editorState} onToggle={props.toggleBlockType} />
       <InlineStyles editorState={props.editorState} onToggle={props.toggleInlineStyle} promptForLink={props.promptForLink} removeLink={props.removeLink} />
 

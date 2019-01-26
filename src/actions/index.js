@@ -24,13 +24,13 @@ export function loadBio() {
  )}
 }
 
-export function updateBio(bio_content) {
+export function updateBioAction(bio_content) {
   console.log(bio_content)
   return dispatch => {
     fetch(`http://localhost:3000/api/v1/bios/1`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Accepts: "application/json" },
-      body: JSON.stringify({ content: bio_content })
+      body: JSON.stringify(bio_content)
     })
     .then(response => response.json())
     .then(json =>

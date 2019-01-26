@@ -35,7 +35,6 @@ class App extends Component {
   }
 
   render() {
-    console.log("App", localStorage.getItem('token'))
     return (
       <div className="App">
 
