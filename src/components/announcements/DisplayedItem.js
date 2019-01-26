@@ -23,17 +23,35 @@ class DisplayedItem extends React.Component {
     if (!!this.props.item && this.props.item != "new") {
       const announcement = this.props.item
       this.setState({
-        id: announcement.id,
         headline: announcement.headline || "",
         img_link: announcement.img_link || "",
         audio_link: announcement.audio_link || "",
         embed_link: announcement.embed_link || "",
-        content: announcement.content_link || ""
+        content: announcement.content || ""
       })
-    } else {
-      this.setState({
-        id: "new"
-      })
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.item != this.props.item) {
+      if (!!this.props.item && this.props.item != "new") {
+        const announcement = this.props.item
+        this.setState({
+          headline: announcement.headline || "",
+          img_link: announcement.img_link || "",
+          audio_link: announcement.audio_link || "",
+          embed_link: announcement.embed_link || "",
+          content: announcement.content || ""
+        })
+      } else {
+        this.setState({
+          headline: "",
+          img_link: "",
+          audio_link: "",
+          embed_link: "",
+          content: null
+        })
+      }
     }
   }
 
@@ -47,7 +65,7 @@ class DisplayedItem extends React.Component {
 
 
   handleCreateAnnouncement = () => {
-    this.props.createAnnouncementAction(this.state)
+    this.props.handleCreateAnnouncement(this.state)
   }
 
   handleUpdateAnnouncement = () => {
@@ -55,7 +73,7 @@ class DisplayedItem extends React.Component {
     console.log("ann_state", ann_state)
     ann_state["id"] = this.props.item.id
     console.log("ann_state with id", ann_state)
-    this.props.updateAnnouncementAction(ann_state)
+    this.props.handleUpdateAnnouncement(ann_state)
   }
 
   handleFn = () => {

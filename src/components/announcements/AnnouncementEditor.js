@@ -31,24 +31,20 @@ class AnnouncementEditor extends React.Component {
       this.setState({
        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.announcement.content)))
       })
-    } else {
-      this.setState({
-        editorState: EditorState.createEmpty(decorator)
-      })
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-   if ((prevProps.announcement == "new" && this.props.announcement !="new") || (!!prevProps.announcement &&  prevProps.announcement.content != this.props.announcement.content)) {
-     let announcement = this.props.announcement
-     const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
-    this.setState({
-      editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(announcement.content)), decorator)
-    })
-  } else {
-    return;
-  }
-  }
+
+    componentDidUpdate(prevProps, prevState) {
+      if (prevProps.announcement != this.props.announcement && this.props.announcement != "new" ) {
+        const decorator = new CompositeDecorator([{strategy: findLinkEntities, component: Link}])
+
+          this.setState({
+           editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.announcement.content)), decorator)
+          })
+
+      }
+    }
 
   _onURLChange(e) {
     let val = e.target.value

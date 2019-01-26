@@ -5,7 +5,7 @@ const AnnouncementList = (props) => {
   return (
     <div className='announcement-list-wrapper'>
       {props.announcements.map((a) => {
-        return <AnnouncementListItem announcement={a} key={a.id} />
+        return <AnnouncementListItem handleDisplayAnnouncement={props.handleDisplayAnnouncement} announcement={a} key={a.id} />
       })}
     </div>
   )
